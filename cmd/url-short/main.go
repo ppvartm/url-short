@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"urlshort/internal/config"
+	"urlshort/internal/http-server/handlers/delete"
 	"urlshort/internal/http-server/handlers/redirect"
 	"urlshort/internal/http-server/handlers/url/save"
 	mwLogger "urlshort/internal/http-server/middleware/logger"
@@ -42,6 +43,7 @@ func main() {
 
 	router.Post("/url", save.New(log, storage))
 	router.Get("/{alias}", redirect.New(log, storage))
+	router.Delete("/{alias}", delete.New(log, storage))
 
 	log.Info("server starting", slog.String("addres", config.Address))
 
