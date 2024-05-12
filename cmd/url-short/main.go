@@ -11,7 +11,8 @@ import (
 	"urlshort/internal/http-server/handlers/url/save"
 	mwLogger "urlshort/internal/http-server/middleware/logger"
 	"urlshort/internal/lib/logger"
-	"urlshort/internal/storage/sqlite"
+	"urlshort/internal/storage/postresql"
+	_ "urlshort/internal/storage/sqlite"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -26,13 +27,13 @@ func main() {
 
 	log.Debug("start", slog.String("env", config.Env))
 
-	storage, err := sqlite.New(config.StoragePath)
+	//storage, err := sqlite.New(config.StoragePath)
+	storage, err := postresql.New(config.DB_Address, config.User, config.Password, config.DbName)
 	if err != nil {
 		log.Error("failed to init storage", logger.Err(err))
 		os.Exit(1)
 	}
-	_ = storage
-
+	defer storage.Close()
 	router := chi.NewRouter()
 	router.Use(middleware.RequestID)
 	router.Use(middleware.RealIP)
@@ -59,5 +60,4 @@ func main() {
 	}
 
 	log.Error("server stopped")
-
 }

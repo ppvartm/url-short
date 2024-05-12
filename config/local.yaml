@@ -4,3 +4,9 @@ http_server:
    address: "localhost:8082"
    timeout: 4s
    idle_timeout: 60s
+postgresql:
+   db_address: "localhost:5432"
+   user: "postgres"
+   password: ""
+   db_name: "test_db"
+

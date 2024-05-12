@@ -12,6 +12,7 @@ type Config struct {
 	Env         string `yaml:"env" env:"ENV" env-default:"local"`
 	StoragePath string `yaml:"storage_path" env-required:"true"`
 	HTTPServ    `yaml:"http_server"`
+	Postgresql  `yaml:"postgresql"`
 }
 
 type HTTPServ struct {
@@ -20,11 +21,15 @@ type HTTPServ struct {
 	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"60s"`
 }
 
+type Postgresql struct {
+	DB_Address string `yaml:"db_address" env-default:"localhost:5432"`
+	User       string `yaml:"user"`
+	Password   string `yaml:"password"`
+	DbName     string `yaml:"db_name"`
+}
+
 func MustLoad() *Config {
 	configFilePath := `C:\Users\artmp\go-projects\url-performer\config\local.yaml`
-	if configFilePath == "" {
-		log.Fatal("CONFIG_PATH is not set")
-	}
 
 	if _, err := os.Stat(configFilePath); os.IsNotExist(err) {
 		log.Fatalln("config file does not exist ", configFilePath)
